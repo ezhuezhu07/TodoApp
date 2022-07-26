@@ -1,0 +1,15 @@
+1.) Google Signup / Signin -1
+
+2.) Use Firebase as the Backend -1
+
+3.) The Signed in User will have the provision to create a Todo List. He can add a Task, add a description to it, Select the Date and Submit it.
+Eg : Task Name - Planning the Project
+Description - I will have to Plan Employee Resource Allocation on Trello
+Date - 4th April 2022 
+
+UI - 2 days
+4.) The User should also have a provision to Edit that Task. He can edit the Task Name, Description and the Date.
+
+5.) The User should also have the provision to Delete that Task.
+
+6.) A Logged in User should have provision to view / edit only his Tasks and not other Users' tasks.
