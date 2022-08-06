@@ -34,13 +34,28 @@ dependencies:
   firebase_core: ^1.20.0
 
   #Firebase Database
-  cloud_firestore: ^3.4.2
+  cloud_firestore: ^3.4.3
 
   #Firebase Auth
   firebase_auth: ^3.6.1
 
-  #For Statemanagement using GetX
+  #For State management using GetX
   get: ^4.6.5
+
+  #shimmer animation while content loading
+  shimmer: ^2.0.0
+
+  # using for date formatting
+  intl: ^0.17.0
+
+  # slidable
+  flutter_slidable: ^2.0.0
+
+  #google sign in
+  google_sign_in: ^5.4.0
+
+  #font awesome for icons
+  font_awesome_flutter: ^10.1.0
 
 dev_dependencies:
   flutter_test:

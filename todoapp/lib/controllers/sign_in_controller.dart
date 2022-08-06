@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todoapp/controllers/auth_controller.dart';
 
 class SignInController extends GetxController {
   // ? widget names
@@ -8,6 +8,7 @@ class SignInController extends GetxController {
   final String signInEmailTextField = 'signInEmailTextField';
   final String signInPasswordField = 'signInPasswordField';
   final String signInButton = 'signInButton';
+  late AuthController authController;
 
   // ? password field variable
   bool _passwordVisible = false;
@@ -84,9 +85,21 @@ class SignInController extends GetxController {
     return isValid;
   }
 
+  void focusOnNextInvalid() {
+    for (String key in validations.keys) {
+      if (validations[key] == false) {
+        FocusNode? invalidNode = getFocusNode(key);
+
+        if (invalidNode != null) invalidNode.requestFocus();
+        break;
+      }
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
+    authController = Get.find<AuthController>();
     textControllers = <String, TextEditingController>{};
     focusNodes = <String, FocusNode>{};
     validations = <String, bool>{};
@@ -144,10 +157,11 @@ class SignInController extends GetxController {
 
   // ? sign in button methods
   Future<void> signInAction(BuildContext context) async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: textControllers[signInEmailTextField]!.text.trim(),
-        password: textControllers[signInPasswordField]!.text.trim());
+    final authResult = await authController.signIn(
+        textControllers[signInEmailTextField]!.text.trim(),
+        textControllers[signInPasswordField]!.text.trim());
 
-    print("Signed in success fuly ${FirebaseAuth.instance.currentUser!.email}");
+    if (authResult == null) {
+    } else {}
   }
 }
