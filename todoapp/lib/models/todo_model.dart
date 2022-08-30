@@ -24,7 +24,7 @@ class TodoModel {
     required this.description,
     required this.label,
     required this.date,
-    this.isCompleted,
+    this.isCompleted = false,
     required this.createdTime,
   });
 

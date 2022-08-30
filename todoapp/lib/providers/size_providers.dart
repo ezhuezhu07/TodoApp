@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class SizeController extends GetxController {
+class SizeProvider with ChangeNotifier {
   late double screenHeight;
   late double screenWidth;
 
@@ -36,6 +35,11 @@ class SizeController extends GetxController {
   late double signInWithGoogleButtonLeft;
   late double signInWithGoogleButtonHeight;
   late double signInWithGoogleButtonWidth;
+
+  late double todoLottieAnimationTop;
+  late double todoLottieAnimationLeft;
+  late double todoLottieAnimationHeight;
+  late double todoLottieAnimationWidth;
 
   // Sign Up Page
   late double signUpTitleTop;
@@ -158,7 +162,8 @@ class SizeController extends GetxController {
   late double fontSize4;
   late double fontSize5;
 
-  void setSize(BuildContext context) {
+  void setSize(BuildContext context) async {
+    print('Size Provider is called');
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
@@ -189,9 +194,14 @@ class SizeController extends GetxController {
     signInCreateAccountLinkWidth = screenWidth * 0.4;
 
     signInWithGoogleButtonTop = screenHeight * 0.7;
-    signInWithGoogleButtonLeft = screenWidth * 0.3;
+    signInWithGoogleButtonLeft = screenWidth * 0.05;
     signInWithGoogleButtonHeight = screenHeight * 0.075;
-    signInWithGoogleButtonWidth = screenWidth * 0.4;
+    signInWithGoogleButtonWidth = screenWidth * 0.9;
+
+    todoLottieAnimationTop = screenHeight * 0.3;
+    todoLottieAnimationLeft = 0;
+    todoLottieAnimationHeight = screenHeight * 0.3;
+    todoLottieAnimationWidth = screenWidth;
 
     // Sign up page
     signUpTitleTop = screenHeight * 0.1;
@@ -256,17 +266,17 @@ class SizeController extends GetxController {
     addTodoTitleTextFieldHeight = screenHeight * (0.1);
     addTodoTitleTextFieldWidth = screenWidth * 0.9;
 
-    addTodoDescriptionTextAreaTop = screenHeight * (0.5);
-    addTodoDescriptionTextAreaLeft = screenWidth * 0.05;
-    addTodoDescriptionTextAreaHeight = screenHeight * (0.1);
-    addTodoDescriptionTextAreaWidth = screenWidth * 0.9;
-
-    addTodoRemainderTimeTop = screenHeight * (0.6);
+    addTodoRemainderTimeTop = screenHeight * 0.5;
     addTodoRemainderTimeLeft = screenWidth * 0.05;
-    addTodoRemainderTimeHeight = screenHeight * (0.05);
+    addTodoRemainderTimeHeight = screenHeight * (0.075);
     addTodoRemainderTimeWidth = screenWidth * 0.9;
 
-    addTodoFormSubmitButtonTop = screenHeight * (0.675);
+    addTodoDescriptionTextAreaTop = screenHeight * (0.6);
+    addTodoDescriptionTextAreaLeft = screenWidth * 0.05;
+    addTodoDescriptionTextAreaHeight = screenHeight * (0.2);
+    addTodoDescriptionTextAreaWidth = screenWidth * 0.9;
+
+    addTodoFormSubmitButtonTop = screenHeight * (0.85);
     addTodoFormSubmitButtonLeft = screenWidth * 0.05;
     addTodoFormSubmitButtonHeight = screenHeight * (0.05);
     addTodoFormSubmitButtonWidth = screenWidth * 0.9;
@@ -292,17 +302,17 @@ class SizeController extends GetxController {
     editTodoTitleTextFieldHeight = screenHeight * (0.1);
     editTodoTitleTextFieldWidth = screenWidth * 0.9;
 
-    editTodoDescriptionTextAreaTop = screenHeight * (0.5);
-    editTodoDescriptionTextAreaLeft = screenWidth * 0.05;
-    editTodoDescriptionTextAreaHeight = screenHeight * (0.1);
-    editTodoDescriptionTextAreaWidth = screenWidth * 0.9;
-
-    editTodoRemainderTimeTop = screenHeight * (0.6);
+    editTodoRemainderTimeTop = screenHeight * 0.5;
     editTodoRemainderTimeLeft = screenWidth * 0.05;
-    editTodoRemainderTimeHeight = screenHeight * (0.05);
+    editTodoRemainderTimeHeight = screenHeight * (0.075);
     editTodoRemainderTimeWidth = screenWidth * 0.9;
 
-    editTodoFormSubmitButtonTop = screenHeight * (0.675);
+    editTodoDescriptionTextAreaTop = screenHeight * (0.6);
+    editTodoDescriptionTextAreaLeft = screenWidth * 0.05;
+    editTodoDescriptionTextAreaHeight = screenHeight * (0.2);
+    editTodoDescriptionTextAreaWidth = screenWidth * 0.9;
+
+    editTodoFormSubmitButtonTop = screenHeight * (0.85);
     editTodoFormSubmitButtonLeft = screenWidth * 0.05;
     editTodoFormSubmitButtonHeight = screenHeight * (0.05);
     editTodoFormSubmitButtonWidth = screenWidth * 0.9;
@@ -313,5 +323,7 @@ class SizeController extends GetxController {
     fontSize3 = screenHeight * 0.035;
     fontSize4 = screenHeight * 0.025;
     fontSize5 = screenHeight * 0.015;
+    await Future.delayed(const Duration(seconds: 1));
+    notifyListeners();
   }
 }

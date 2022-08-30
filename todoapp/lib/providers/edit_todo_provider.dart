@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp/consts.dart';
-import 'package:todoapp/controllers/todo_dashboard_controller.dart';
 import 'package:todoapp/models/todo_model.dart';
+import 'package:todoapp/providers/todo_dashboard_provider.dart';
 
-class EditTodoController extends GetxController {
+class EditTodoProvider extends ChangeNotifier {
   final String editTodoController = 'editTodoController';
   final String editPageTitle = 'editPageTitle';
   final String editTodoTypeIcon = 'editTodoTypeIcon';
@@ -16,25 +17,72 @@ class EditTodoController extends GetxController {
   final String editTodoRemainderTime = 'editTodoRemainderTime';
   final String editTodoFormSubmitButton = 'editTodoFormSubmitButton';
 
-  bool isUpdatePage = true;
-  bool isDateSelected = false;
-  late TodoModel todoModel;
+  TodoModel? _todoModelData;
 
-  DateTime date = DateTime.now();
+  bool _isUpdatePage = false;
+
+  bool _isDateSelected = false;
+
+  DateTime _date = DateTime.now();
   //drop down
-  String currentDropDownValue = 'Planning'; //present value of the dropdown
+  String _currentDropDownValue = 'Planning';
+  //present value of the dropdown
   List<String> dropDownValues = AppConst.labelIcons.keys.toList();
 
-  late Map<String, TextEditingController>
-      textControllers; //map of all fields controllers
+  Map<String, TextEditingController> textControllers =
+      <String, TextEditingController>{}; //map of all fields controllers
 
-  late Map<String, FocusNode> focusNodes; //map of all fields focus nodes
+  Map<String, FocusNode> focusNodes =
+      <String, FocusNode>{}; //map of all fields focus nodes
 
-  late Map<String, bool> validations; //map of all fields validation status
+  Map<String, bool> validations =
+      <String, bool>{}; //map of all fields validation status
 
-  late Map<String, bool> enabledStatus; //map of all enabled fields status
-
+  Map<String, bool> enabledStatus =
+      <String, bool>{}; //map of all enabled fields status
   // TextField validation functions
+
+  // getters
+  bool get isDateSelected => _isDateSelected;
+
+  bool get isUpdatePage => _isUpdatePage;
+
+  DateTime get date => _date;
+
+  String get currentDropDownValue => _currentDropDownValue;
+
+  TodoModel get todoModelData => _todoModelData!;
+
+  // setters
+  void setTodoModelData(TodoModel model) {
+    print('adding edit todo model');
+
+    _todoModelData = model;
+    notifyListeners();
+  }
+
+  void setIsDateSelected(bool value) {
+    _isDateSelected = value;
+    notifyListeners();
+  }
+
+  void setDate(DateTime value) {
+    // _todoModelData!.date = value;
+    _date = value;
+    notifyListeners();
+  }
+
+  void setIsUpdatePage(bool value) {
+    _isUpdatePage = value;
+    notifyListeners();
+  }
+
+  void setCurrentDropDownValue(String value) {
+    _todoModelData!.label = value;
+    _currentDropDownValue = value;
+    notifyListeners();
+  }
+
   TextEditingController? getTextController(String id) {
     return textControllers[id];
   }
@@ -57,7 +105,7 @@ class EditTodoController extends GetxController {
   }
 
   bool? addValidation(String id) {
-    validations.putIfAbsent(id, () => false);
+    validations.putIfAbsent(id, () => true);
     return validations[id];
   }
 
@@ -71,6 +119,7 @@ class EditTodoController extends GetxController {
   void updateValidation(String id, bool change) {
     validations[id] = change;
     validations.update(id, (value) => change);
+    // notifyListeners();
   }
 
   bool? isEnabled(String id) {
@@ -87,6 +136,7 @@ class EditTodoController extends GetxController {
   bool isFormValid() {
     bool isValid = true;
     validations.forEach((key, value) {
+      print('key $key valid: $value');
       isValid = isValid && value;
     });
     return isValid;
@@ -101,15 +151,12 @@ class EditTodoController extends GetxController {
         break;
       }
     }
+    notifyListeners();
   }
 
   @override
   void onInit() {
-    super.onInit();
-    textControllers = <String, TextEditingController>{};
-    focusNodes = <String, FocusNode>{};
-    validations = <String, bool>{};
-    enabledStatus = <String, bool>{};
+    // super.onInit();
   }
 
   @override
@@ -121,7 +168,7 @@ class EditTodoController extends GetxController {
     focusNodes.forEach((key, value) {
       value.dispose();
     });
-    super.onClose();
+    // super.onClose();
   }
 
   // UI logic modules
@@ -149,7 +196,7 @@ class EditTodoController extends GetxController {
       updateValidation(editTodoDescriptionTextArea, true);
     }
 
-    return getValidation(editTodoTitleTextField)
+    return getValidation(editTodoDescriptionTextArea)
         ? null
         : 'Please write description for todo';
   }
@@ -157,32 +204,44 @@ class EditTodoController extends GetxController {
   // ? drop down change logic
   void dropDownChange(String? newValue) {
     if (newValue != null) {
-      currentDropDownValue = newValue;
+      _currentDropDownValue = newValue;
     }
-    update([editTodoTypeList, editTodoTypeIcon]);
+    notifyListeners();
     // Todo logic for drop down change
   }
 
-  Future<void> updateTodo(String id) async {
-    TodoModel todoModel = TodoModel(
-        title: getTextController(editTodoTitleTextField)!.text.trim(),
-        description:
-            getTextController(editTodoDescriptionTextArea)!.text.trim(),
-        label: currentDropDownValue,
-        date: date,
-        createdTime: id);
-    final docUpdate = FirebaseFirestore.instance
-        .collection(AppConst.todoDatabaseName)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(AppConst.todoUserDatabaseName)
-        .doc(todoModel.createdTime.toString());
-    docUpdate.update(todoModel.toJson());
-    Get.find<TodoDashboardController>().update();
-    Get.snackbar(
-      'Update Data Operation Status',
-      'Data updated successfully',
-      dismissDirection: DismissDirection.down,
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  Future<bool> updateTodo(TodoModel model, BuildContext context) async {
+    model.title = getTextController(editTodoTitleTextField)!.text.trim();
+    model.description =
+        getTextController(editTodoDescriptionTextArea)!.text.trim();
+    // print(model.toJson());
+    try {
+      final docUpdate = FirebaseFirestore.instance
+          .collection(AppConst.todoDatabaseName)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection(AppConst.todoUserDatabaseName)
+          .doc(model.createdTime.toString());
+      docUpdate.update(model.toJson()).then((value) async {
+        await Provider.of<TodoDashboardProvider>(context, listen: false)
+            .initializeTodosCount();
+        return true;
+      });
+
+      return true;
+    } catch (onError) {
+      return false;
+    }
+    // return false;
+  }
+
+  Future<void> showDatePickerWidget(BuildContext context) async {
+    DateTime? newDate = await showDatePicker(
+        context: context,
+        initialDate: date,
+        firstDate: DateTime(date.year, date.month, date.day - 14),
+        lastDate: DateTime(date.year, date.month, date.day + 14));
+    if (newDate == null) return;
+    setDate(newDate);
+    setIsDateSelected(true);
   }
 }

@@ -3,81 +3,77 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp/colors.dart';
-import 'package:todoapp/controllers/google_sign_in.dart';
-import 'package:todoapp/controllers/sign_in_controller.dart';
-import 'package:todoapp/controllers/size_controller.dart';
+import 'package:todoapp/providers/sign_in_provider.dart';
+import 'package:todoapp/providers/size_providers.dart';
 
 class SignInPage extends StatelessWidget {
   // const SignInPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Sizes are assigned based on Screen Size
-    // SizeController sizeController = Get.find<SizeController>();
-    SizeController sizeController = Get.put(SizeController());
-    GoogleSignInController googleSignInController =
-        Get.put(GoogleSignInController());
-    sizeController.setSize(context);
-    return GetBuilder<SignInController>(
-      id: 'SignInPage',
-      init: SignInController(),
-      builder: (controller) {
-        // Size screensize = MediaQuery.of(context).size;
-        // SizeController sizeController = Get.put(SizeController());
-        // sizeController.setSize(context);
+    SignInProvider signInProvider =
+        Provider.of<SignInProvider>(context, listen: false);
 
-        return Material(
-          child: Container(
-            height: sizeController.screenHeight,
-            width: sizeController.screenWidth,
-            color: darkmgray,
-            child: Stack(
-              children: [
-                Positioned(
-                    top: sizeController.appTitleTop,
-                    left: sizeController.appTitleLeft,
-                    child: SizedBox(
-                        height: sizeController.appTitleHeight,
-                        width: sizeController.appTitleWidth,
-                        child: Center(
-                            child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "Todo App",
-                            style: TextStyle(
-                              color: blueShade,
-                              fontSize: sizeController.fontSize1,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    // });
+    return Consumer<SizeProvider>(builder: (context, sizeProvider, child) {
+      Provider.of<SizeProvider>(context, listen: false).setSize(context);
+      return Material(
+        child: Container(
+          height: sizeProvider.screenHeight,
+          width: sizeProvider.screenWidth,
+          color: darkmgray,
+          child: Stack(
+            children: [
+              Positioned(
+                  top: sizeProvider.appTitleTop,
+                  left: sizeProvider.appTitleLeft,
+                  child: SizedBox(
+                      height: sizeProvider.appTitleHeight,
+                      width: sizeProvider.appTitleWidth,
+                      child: Center(
+                          child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Todo App",
+                          style: TextStyle(
+                            color: blueShade,
+                            fontSize: sizeProvider.fontSize1,
+                            fontWeight: FontWeight.bold,
                           ),
-                        )))),
-                Positioned(
-                    top: sizeController.signInEmailTextFieldTop,
-                    left: sizeController.signInEmailTextFieldLeft,
-                    child: SizedBox(
-                        height: sizeController.signInEmailTextFieldHeight,
-                        width: sizeController.signInEmailTextFieldWidth,
-                        child: TextFormField(
-                          controller: controller.addTextController(
-                              controller.signInEmailTextField,
+                          textAlign: TextAlign.center,
+                        ),
+                      )))),
+              Positioned(
+                  top: sizeProvider.signInEmailTextFieldTop,
+                  left: sizeProvider.signInEmailTextFieldLeft,
+                  child: SizedBox(
+                      height: sizeProvider.signInEmailTextFieldHeight,
+                      width: sizeProvider.signInEmailTextFieldWidth,
+                      child: Consumer<SignInProvider>(
+                          builder: (context, provider, _) {
+                        return TextFormField(
+                          controller: provider.addTextController(
+                              provider.signInEmailTextField,
                               initialValue: ""),
-                          focusNode: controller
-                              .addFocusNode(controller.signInEmailTextField),
+                          focusNode: provider
+                              .addFocusNode(provider.signInEmailTextField),
 
                           autovalidateMode: AutovalidateMode.onUserInteraction,
 
                           validator: (String? value) {
-                            return controller
+                            return provider
                                 .signInEmailTextFieldValidation(value);
                           },
                           textAlign: TextAlign.center,
                           onChanged: (value) {},
 
                           style: (TextStyle(
-                              fontSize: sizeController.fontSize4,
+                              fontSize: sizeProvider.fontSize4,
                               color: blueShade,
                               fontWeight: FontWeight.normal)),
 
@@ -90,44 +86,47 @@ class SignInPage extends StatelessWidget {
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                               color: bluemid,
-                              // color: controller.fgIconColor
+                              // color: provider.fgIconColor
                             )),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: bluemid)),
                             labelText: 'Email Id',
                             labelStyle: (TextStyle(
-                                fontSize: sizeController.fontSize4,
+                                fontSize: sizeProvider.fontSize4,
                                 color: bluemid,
                                 fontWeight: FontWeight.normal)),
                             errorStyle: (TextStyle(
-                                fontSize: sizeController.fontSize5,
+                                fontSize: sizeProvider.fontSize5,
                                 color: cherry,
                                 fontWeight: FontWeight.normal)),
                           ),
                           //cursorHeight: screensize.height*0.05,
-                        ))),
-                Positioned(
-                    top: sizeController.signInPasswordFieldTop,
-                    left: sizeController.signInPasswordFieldLeft,
-                    child: GetBuilder<SignInController>(
-                      id: controller.signInPasswordField,
-                      builder: (_) {
-                        return SizedBox(
-                            height: sizeController.signInPasswordFieldHeight,
-                            width: sizeController.signInPasswordFieldWidth,
-                            child: TextFormField(
-                              // readOnly: controller.isSignInRequesting,
-                              controller: controller.addTextController(
-                                  controller.signInPasswordField,
+                        );
+                      }))),
+              Positioned(
+                  top: sizeProvider.signInPasswordFieldTop,
+                  left: sizeProvider.signInPasswordFieldLeft,
+                  child: Consumer<SignInProvider>(
+                    // id: provider.signInPasswordField,
+                    builder: (_, mypro, __) {
+                      return SizedBox(
+                          height: sizeProvider.signInPasswordFieldHeight,
+                          width: sizeProvider.signInPasswordFieldWidth,
+                          child: Consumer<SignInProvider>(
+                              builder: (context, provider, _) {
+                            return TextFormField(
+                              // readOnly: provider.isSignInRequesting,
+                              controller: mypro.addTextController(
+                                  mypro.signInPasswordField,
                                   initialValue: ""),
-                              focusNode: controller
-                                  .addFocusNode(controller.signInPasswordField),
+                              focusNode: provider
+                                  .addFocusNode(mypro.signInPasswordField),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
 
                               onSaved: (String? value) {},
                               validator: (String? value) {
-                                return controller
+                                return mypro
                                     .signInPasswordFieldValidation(value);
                               },
 
@@ -138,12 +137,12 @@ class SignInPage extends StatelessWidget {
 
                               //All textfield options have to be made as properties of textfield widget
                               style: (TextStyle(
-                                fontSize: sizeController.fontSize4,
+                                fontSize: sizeProvider.fontSize4,
                                 color: blueShade,
                               )),
                               keyboardType: TextInputType.text,
                               cursorColor: blueShade,
-                              obscureText: !controller.isPasswordVisible(),
+                              obscureText: !provider.isPasswordVisible(),
 
                               decoration: InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
@@ -152,180 +151,186 @@ class SignInPage extends StatelessWidget {
                                     borderSide: BorderSide(color: bluemid)),
                                 labelText: 'Password',
                                 labelStyle: (TextStyle(
-                                    fontSize: sizeController.fontSize4,
+                                    fontSize: sizeProvider.fontSize4,
                                     color: bluemid,
                                     fontWeight: FontWeight.normal)),
                                 errorStyle: (TextStyle(
-                                    fontSize: sizeController.fontSize5,
+                                    fontSize: sizeProvider.fontSize5,
                                     color: Colors.red,
                                     fontWeight: FontWeight.normal)),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    controller.isPasswordVisible()
+                                    provider.isPasswordVisible()
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    color: controller.isPasswordVisible()
+                                    color: provider.isPasswordVisible()
                                         ? blueShade
                                         : bluemid,
                                   ),
                                   onPressed: () {
-                                    controller
+                                    provider
                                         .togglePasswordVisibleState(); //Any logic will have ULM as suffix
                                   },
                                 ),
                               ),
-                            ));
-                      },
-                    )),
-                Positioned(
-                  top: sizeController.signInButtonTop,
-                  left: sizeController.signInButtonLeft,
-                  child: SizedBox(
-                    height: sizeController.signInButtonHeight,
-                    width: sizeController.signInButtonWidth,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0))),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(blueShadeLight),
-                          shadowColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(blueShade),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered)) {
-                              return blueShadeHover;
-                            }
-                            if (states.contains(MaterialState.pressed)) {
-                              return bluemid;
-                            }
-                            return null; // Defer to the widget's default.
-                          })),
-                      onPressed: () async {
-                        if (controller.isFormValid()) {
-                          !controller.isSignInRequesting
-                              ? controller.signInAction(context)
-                              : null;
-                        } else {
-                          controller.focusOnNextInvalid();
-                        }
+                            );
+                          }));
+                    },
+                  )),
+              Positioned(
+                top: sizeProvider.signInButtonTop,
+                left: sizeProvider.signInButtonLeft,
+                child: SizedBox(
+                  height: sizeProvider.signInButtonHeight,
+                  width: sizeProvider.signInButtonWidth,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0))),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(blueShadeLight),
+                        shadowColor:
+                            MaterialStateProperty.all<Color>(Colors.black),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(blueShade),
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.hovered)) {
+                            return blueShadeHover;
+                          }
+                          if (states.contains(MaterialState.pressed)) {
+                            return bluemid;
+                          }
+                          return null; // Defer to the widget's default.
+                        })),
+                    onPressed: () async {
+                      if (signInProvider.isFormValid()) {
+                        !signInProvider.isSignInRequesting
+                            ? signInProvider.signInAction(context)
+                            : null;
+                      } else {
+                        signInProvider.focusOnNextInvalid();
+                      }
 
-                        // await googleSignInController.googleLogin();
-                      },
-                      child: !controller.isSignInRequesting
+                      // await googleSignInController.googleLogin();
+                    },
+                    child: Consumer<SignInProvider>(
+                        builder: (context, provider, _) {
+                      return !provider.isSignInRequesting
                           ? FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'Sign In',
                                 style: TextStyle(
-                                  fontSize: sizeController.fontSize4,
+                                  fontSize: sizeProvider.fontSize4,
                                 ),
                               ),
                             )
                           : SizedBox(
-                              width: sizeController.screenWidth * 0.01,
-                              height: sizeController.screenWidth * 0.01,
+                              width: sizeProvider.screenWidth * 0.01,
+                              height: sizeProvider.screenWidth * 0.01,
                               child: Center(
                                   child: CircularProgressIndicator(
                                       color: Colors.red)),
-                            ),
-                    ),
+                            );
+                    }),
                   ),
                 ),
-                Positioned(
-                  top: sizeController.signInCreateAccountLinkTop,
-                  left: sizeController.signInCreateAccountLinkLeft,
-                  child: SizedBox(
-                    height: sizeController.signInCreateAccountLinkHeight,
-                    width: sizeController.signInCreateAccountLinkWidth,
-                    child: RichText(
-                      // text: ,
-                      text: TextSpan(
-                          style: TextStyle(
-                            color: bluemid,
-                            fontSize: sizeController.fontSize5,
-                          ),
-                          text: 'Not have an account? ',
-                          children: [
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Get.toNamed('/SignUpPage');
-                                  },
-                                text: 'Create New',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: bluemid,
-                                )),
-                          ]),
-                    ),
+              ),
+              Positioned(
+                top: sizeProvider.signInCreateAccountLinkTop,
+                left: sizeProvider.signInCreateAccountLinkLeft,
+                child: SizedBox(
+                  height: sizeProvider.signInCreateAccountLinkHeight,
+                  width: sizeProvider.signInCreateAccountLinkWidth,
+                  child: RichText(
+                    // text: ,
+                    text: TextSpan(
+                        style: TextStyle(
+                          color: bluemid,
+                          fontSize: sizeProvider.fontSize5,
+                        ),
+                        text: 'Not have an account? ',
+                        children: [
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Get.toNamed('/SignUpPage');
+                                },
+                              text: 'Create New',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: bluemid,
+                              )),
+                        ]),
                   ),
                 ),
-                Positioned(
-                  top: sizeController.signInWithGoogleButtonTop,
-                  left: sizeController.signInWithGoogleButtonLeft,
-                  child: SizedBox(
-                    height: sizeController.signInWithGoogleButtonHeight,
-                    width: sizeController.signInWithGoogleButtonWidth,
-                    child: ElevatedButton.icon(
-                      icon: FaIcon(
-                        FontAwesomeIcons.google,
-                        color: blueShade,
-                        size: 32,
-                      ),
-                      style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0))),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(blueShadeLight),
-                          shadowColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(blueShade),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered)) {
-                              return blueShadeHover;
-                            }
-                            if (states.contains(MaterialState.pressed)) {
-                              return bluemid;
-                            }
-                            return null; // Defer to the widget's default.
-                          })),
-                      onPressed: () async {
-                        await googleSignInController.googleLogin();
-                      },
-                      label: !controller.isSignInRequesting
+              ),
+              Positioned(
+                top: sizeProvider.signInWithGoogleButtonTop,
+                left: sizeProvider.signInWithGoogleButtonLeft,
+                child: SizedBox(
+                  height: sizeProvider.signInWithGoogleButtonHeight,
+                  width: sizeProvider.signInWithGoogleButtonWidth,
+                  child: ElevatedButton.icon(
+                    icon: FaIcon(
+                      FontAwesomeIcons.google,
+                      color: blueShade,
+                      size: 32,
+                    ),
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0))),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(blueShadeLight),
+                        shadowColor:
+                            MaterialStateProperty.all<Color>(Colors.black),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(blueShade),
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.hovered)) {
+                            return blueShadeHover;
+                          }
+                          if (states.contains(MaterialState.pressed)) {
+                            return bluemid;
+                          }
+                          return null; // Defer to the widget's default.
+                        })),
+                    onPressed: () async {
+                      // await googleSignInController.googleLogin();
+                    },
+                    label: Consumer<SignInProvider>(
+                        builder: (context, provider, _) {
+                      return !provider.isSignInRequesting
                           ? FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'Sign In With Google',
                                 style: TextStyle(
-                                  fontSize: sizeController.fontSize4,
+                                  fontSize: sizeProvider.fontSize4,
                                 ),
                               ),
                             )
                           : SizedBox(
-                              width: sizeController.screenWidth * 0.01,
-                              height: sizeController.screenWidth * 0.01,
+                              width: sizeProvider.screenWidth * 0.01,
+                              height: sizeProvider.screenWidth * 0.01,
                               child: Center(
                                   child: CircularProgressIndicator(
                                       color: Colors.red)),
-                            ),
-                    ),
+                            );
+                    }),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
+    // return Consumer<SignInProvider>(builder: (context, provider, child) {
+
+    //   // return
+    // });
   }
 }

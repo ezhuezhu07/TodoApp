@@ -2,11 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+// import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp/colors.dart';
 import 'package:todoapp/consts.dart';
-import 'package:todoapp/controllers/todo_dashboard_controller.dart';
+// import 'package:todoapp/controllers/todo_dashboard_controller.dart';
 import 'package:todoapp/models/todo_model.dart';
+import 'package:todoapp/providers/size_providers.dart';
+import 'package:todoapp/providers/todo_dashboard_provider.dart';
+import 'package:todoapp/views/edit_todo_page.dart';
+import 'package:todoapp/widgets/custom_page_route_animation.dart';
 
 class TodoListItemWidget extends StatelessWidget {
   final TodoModel item;
@@ -22,12 +28,17 @@ class TodoListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final todoDashboardProvider =
+        Provider.of<TodoDashboardProvider>(context, listen: false);
+    // return Consumer<TodoDashboardProvider>(builder: (context, myprovider, __) {
+    //   return
+    // });
     return SizeTransition(
         key: ValueKey(item.title),
         sizeFactor: animation,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: item.isCompleted == false
+          child: item.isCompleted == false || item.isCompleted == null
               ? Slidable(
                   startActionPane: ActionPane(
                       motion: const DrawerMotion(),
@@ -40,7 +51,15 @@ class TodoListItemWidget extends StatelessWidget {
                             foregroundColor: green,
                             icon: Icons.edit,
                             onPressed: (context) {
-                              Get.toNamed('/editTodoPage', arguments: [item]);
+                              todoDashboardProvider.setEditTodo(item);
+                              Navigator.push(
+                                context,
+                                CustomPageRouteAnimation(
+                                    child: EditTodoPage(
+                                  todoModel: item,
+                                )),
+                              );
+                              // Get.toNamed('/editTodoPage', arguments: [item]);
                             })
                       ]),
                   endActionPane: ActionPane(
@@ -59,10 +78,9 @@ class TodoListItemWidget extends StatelessWidget {
                               .doc(FirebaseAuth.instance.currentUser!.uid)
                               .collection(AppConst.todoUserDatabaseName)
                               .doc(item.createdTime.toString());
+                          print('Completed item ${item.toJson()}');
                           docUpdate.update(item.toJson());
-                          Get.find<TodoDashboardController>().update();
-                          await Get.find<TodoDashboardController>()
-                              .initializeTodosCount();
+                          await todoDashboardProvider.initializeTodosCount();
                         },
                       ),
                     ],
@@ -75,46 +93,82 @@ class TodoListItemWidget extends StatelessWidget {
 
   Widget buildTodoWigetItem(BuildContext context) => GestureDetector(
         onTap: () {},
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: AppConst.labelbgColors[item.label],
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(16),
-            leading: CircleAvatar(
-              radius: 32,
-              backgroundColor: AppConst.labelbgColors[item.label],
-              child: Text(
-                item.label.substring(0, 3),
-                style: TextStyle(color: AppConst.labelfgColors[item.label]),
-              ),
+        child: Consumer<SizeProvider>(builder: (context, sizeProvider, child) {
+          return Container(
+            margin: const EdgeInsets.all(8),
+            width: sizeProvider.todoListViewWidth,
+            height: sizeProvider.todoListViewHeight * 0.175,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: AppConst.labelbgColors[item.label],
             ),
-            title: Text(
-              item.title,
-              style: TextStyle(
-                  fontSize: 25,
-                  color: AppConst.labelfgColors[item.label],
-                  fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: sizeProvider.todoListViewWidth * 0.6,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    leading: CircleAvatar(
+                      radius: 32,
+                      backgroundColor: AppConst.labelbgColors[item.label],
+                      child: Icon(AppConst.labelIcons[item.label],
+                          size: 30, color: AppConst.labelfgColors[item.label]),
+                    ),
+                    title: Text(
+                      item.title,
+                      style: TextStyle(
+                          fontSize: 25,
+                          color: AppConst.labelfgColors[item.label],
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      item.description,
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: AppConst.labelfgColors[item.label],
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: sizeProvider.todoListViewWidth * 0.3,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          DateFormat('dd MMM').format(item.date).toString(),
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: AppConst.labelfgColors[item.label],
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: IconButton(
+                          tooltip: 'To delete it from the list',
+                          icon: Icon(
+                            Icons.delete,
+                            color: AppConst.labelfgColors[item.label],
+                            size: 30,
+                          ),
+                          onPressed: onClicked,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            subtitle: Text(
-              item.description,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: AppConst.labelfgColors[item.label],
-                  fontWeight: FontWeight.w400),
-            ),
-            trailing: IconButton(
-              tooltip: 'To delete it from the list',
-              icon: Icon(
-                Icons.delete,
-                color: AppConst.labelfgColors[item.label],
-                size: 32,
-              ),
-              onPressed: onClicked,
-            ),
-          ),
-        ),
+          );
+        }),
       );
 }

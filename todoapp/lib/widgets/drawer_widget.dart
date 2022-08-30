@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:todoapp/colors.dart';
-import 'package:todoapp/controllers/google_sign_in.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   // const NavigationDrawerWidget({super.key});
@@ -25,11 +23,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                   text: 'Logout',
                   icon: Icons.logout_outlined,
                   onClicked: () async {
-                    if (Get.find<GoogleSignInController>().user != null) {
-                      await Get.find<GoogleSignInController>().googleLogout();
-                    }
                     await FirebaseAuth.instance.signOut();
-                    Get.offNamed('/');
                   })
             ],
           ),

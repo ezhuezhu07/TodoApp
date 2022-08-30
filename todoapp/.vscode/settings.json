@@ -17,5 +17,6 @@
   // "workbench.colorTheme": "Dracula",
   "editor.bracketPairColorization.enabled": true,
   "editor.inlineSuggest.enabled": true,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cSpell.words": ["edittodoprovider"]
 }

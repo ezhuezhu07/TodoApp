@@ -2,56 +2,38 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp/colors.dart';
 import 'package:todoapp/consts.dart';
-import 'package:todoapp/controllers/edit_todo_controller.dart';
-import 'package:todoapp/controllers/size_controller.dart';
 import 'package:todoapp/models/todo_model.dart';
+import 'package:todoapp/providers/edit_todo_provider.dart';
+import 'package:todoapp/providers/size_providers.dart';
 
 class EditTodoPage extends StatelessWidget {
-  var data = Get.arguments;
-
+  TodoModel todoModel;
+  EditTodoPage({super.key, required this.todoModel}) {
+    todoModel = todoModel;
+  }
   @override
   Widget build(BuildContext context) {
-    // Sizes are assigned based on Screen Size
-    SizeController sizeController = Get.put(SizeController());
-    sizeController.setSize(context);
-    print('Passed data');
-    print(data);
-    EditTodoController controller = Get.put(EditTodoController());
-    if (data == null) {
-      Get.back();
-    }
-    if (controller.isUpdatePage) {
-      // controller.onInit();
-      controller.todoModel = data[0] as TodoModel;
-
-      controller.currentDropDownValue = controller.todoModel.label;
-      controller.addTextController(controller.editTodoTitleTextField,
-          initialValue: controller.todoModel.title);
-
-      controller.addTextController(controller.editTodoDescriptionTextArea,
-          initialValue: controller.todoModel.description);
-      controller.date = controller.todoModel.date;
-      controller.isUpdatePage = false;
-      controller.update([controller.editTodoController]);
-    }
-    return GetBuilder<EditTodoController>(
-      id: 'editTodoController',
-      // init: EditTodoController(),
-      builder: (controller) {
-        // sizeController.setSize(context);
-        return Material(
-          child: Container(
-            height: sizeController.screenHeight,
-            width: sizeController.screenWidth,
+    SizeProvider sizer = Provider.of<SizeProvider>(context, listen: false);
+    // final edittodoprovider1 =
+    //     Provider.of<EditTodoProvider>(context, listen: false);
+    return ChangeNotifierProvider<EditTodoProvider>(
+      create: (context) => EditTodoProvider(),
+      // sizer.setSize(context);
+      child: Material(
+        child: Scaffold(
+          body: Container(
+            height: sizer.screenHeight,
+            width: sizer.screenWidth,
             color: darkmgray,
             child: Stack(children: [
               Positioned(
-                top: sizeController.screenHeight * 0.05,
-                left: sizeController.screenWidth * 0.05,
+                top: sizer.screenHeight * 0.05,
+                left: sizer.screenWidth * 0.05,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
                   child: GestureDetector(
@@ -61,11 +43,12 @@ class EditTodoPage extends StatelessWidget {
                         child: FaIcon(
                           FontAwesomeIcons.arrowLeft,
                           color: blueShade,
-                          size: sizeController.fontSize3,
+                          size: sizer.fontSize3,
                         ),
                         onTap: () {
                           {
-                            Get.back();
+                            // Get.back();
+                            Navigator.pop(context);
                           }
                         },
                       ),
@@ -74,11 +57,11 @@ class EditTodoPage extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  top: sizeController.addPageTitleTop,
-                  left: sizeController.addPageTitleLeft,
+                  top: sizer.addPageTitleTop,
+                  left: sizer.addPageTitleLeft,
                   child: SizedBox(
-                    height: sizeController.addPageTitleHeight,
-                    width: sizeController.addPageTitleWidth,
+                    height: sizer.addPageTitleHeight,
+                    width: sizer.addPageTitleWidth,
                     child: Center(
                         child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -86,170 +69,183 @@ class EditTodoPage extends StatelessWidget {
                         'Update the thing',
                         style: TextStyle(
                           color: blueShade,
-                          fontSize: sizeController.fontSize1,
+                          fontSize: sizer.fontSize1,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     )),
                   )),
-              GetBuilder<EditTodoController>(
-                init: EditTodoController(),
-                id: 'editTodoTypeIcon',
-                builder: (_) {
+              Consumer<EditTodoProvider>(
+                builder: (context, editTodoProvider, child) {
                   return Positioned(
-                      top: sizeController.editTodoTypeIconTop,
-                      left: sizeController.editTodoTypeIconLeft,
+                      top: sizer.editTodoTypeIconTop,
+                      left: sizer.editTodoTypeIconLeft,
                       child: SizedBox(
-                          height: sizeController.editTodoTypeIconHeight,
-                          width: sizeController.editTodoTypeIconWidth,
+                          height: sizer.editTodoTypeIconHeight,
+                          width: sizer.editTodoTypeIconWidth,
                           child: CircleAvatar(
-                            radius: sizeController.fontSize5,
+                            radius: sizer.fontSize5,
                             backgroundColor: darkmpurple,
                             child: Icon(
-                              AppConst
-                                  .labelIcons[controller.currentDropDownValue],
-                              size: sizeController.fontSize1,
+                              AppConst.labelIcons[
+                                  // editTodoProvider.isUpdatePage
+                                  // editTodoProvider.currentDropDownValue
+                                  todoModel.label
+                                  // editTodoProvider.todoModelData.label
+                                  ],
+                              size: sizer.fontSize1,
                             ),
                           )));
                 },
               ),
               Positioned(
-                  top: sizeController.editTodoTypeListTop,
-                  left: sizeController.editTodoTypeListLeft,
+                  top: sizer.editTodoTypeListTop,
+                  left: sizer.editTodoTypeListLeft,
                   child: SizedBox(
-                    height: sizeController.editTodoTypeListHeight,
-                    width: sizeController.editTodoTypeListWidth,
+                    height: sizer.editTodoTypeListHeight,
+                    width: sizer.editTodoTypeListWidth,
 
                     //drop down item widget below
-                    child: GetBuilder<EditTodoController>(
-                        id: controller.editTodoTypeList,
-                        builder: (EditTodoController dropDownController) {
-                          //note tbd all dimensioning of text etc needs to be exposed as options to be passed on
-                          //for the widget, this has not been done for this example
+                    child: Consumer<EditTodoProvider>(
+                        builder: (context, editTodoProvider, child) {
+                      return DropdownButtonFormField<String>(
+                        //focusNode: editTodoProvider.addFocusNode(editTodoProvider.dropdownid1uid),
 
-                          return DropdownButtonFormField<String>(
-                            //focusNode: controller.addFocusNode(controller.dropdownid1uid),
-                            value: controller.currentDropDownValue,
-                            elevation: 16,
-                            isExpanded: true,
-                            decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
-                            ),
-                            style: TextStyle(
-                              // fontSize: sizeController.screenHeight * 0.033,
-                              color: blueShade,
-                            ),
-                            dropdownColor: darkmgray,
-
-                            onChanged: (String? newValue) {
-                              if (newValue != controller.currentDropDownValue) {
-                                controller.dropDownChange(newValue);
-                              }
-                            },
-
-                            items: controller.dropDownValues
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: SizedBox(
-                                    width: sizeController.screenWidth * 0.8,
-                                    child: Text(value,
-                                        textAlign: TextAlign.center)),
-                              );
-                            }).toList(),
-                          );
-                        }),
-                  )),
-              Positioned(
-                  top: sizeController.editTodoTitleTextFieldTop,
-                  left: sizeController.editTodoTitleTextFieldLeft,
-                  child: SizedBox(
-                      height: sizeController.editTodoTitleTextFieldHeight,
-                      width: sizeController.editTodoTitleTextFieldWidth,
-                      child: TextFormField(
-                        controller: controller.addTextController(
-                            controller.editTodoTitleTextField,
-                            initialValue: ""),
-                        focusNode: controller
-                            .addFocusNode(controller.editTodoTitleTextField),
-
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                        validator: (String? value) {
-                          return controller
-                              .editTodoTitleTextFieldValidation(value);
-                        },
-                        textAlign: TextAlign.center,
-                        onChanged: (value) {},
-
-                        style: (TextStyle(
-                            fontSize: sizeController.fontSize4,
-                            color: blueShade,
-                            fontWeight: FontWeight.normal)),
-                        //more options below, uncomment to activate
-
-                        keyboardType: TextInputType.emailAddress,
-                        // cursorColor: ,
-                        obscureText: false,
+                        value: todoModel.label,
+                        elevation: 16,
+                        isExpanded: true,
                         decoration: InputDecoration(
                           enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                            color: bluemid,
-                            // color: controller.fgIconColor
-                          )),
+                              borderSide: BorderSide(color: bluemid)),
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: bluemid)),
-                          labelText: 'Title',
-                          labelStyle: (TextStyle(
-                              fontSize: sizeController.fontSize4,
-                              color: bluemid,
-                              fontWeight: FontWeight.normal)),
-                          errorStyle: (TextStyle(
-                              fontSize: sizeController.fontSize5,
-                              color: cherry,
-                              fontWeight: FontWeight.normal)),
                         ),
-                        //cursorHeight: screensize.height*0.05,
-                      ))),
+                        style: TextStyle(
+                          // fontSize: sizer.screenHeight * 0.033,
+                          color: blueShade,
+                        ),
+                        dropdownColor: darkmgray,
+
+                        onChanged: (String? newValue) {
+                          if (newValue !=
+                              Provider.of<EditTodoProvider>(context,
+                                      listen: false)
+                                  .currentDropDownValue) {
+                            todoModel.label = newValue!;
+                            Provider.of<EditTodoProvider>(context,
+                                    listen: false)
+                                .dropDownChange(newValue);
+                          }
+                        },
+
+                        items: editTodoProvider.dropDownValues
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: SizedBox(
+                                width: sizer.screenWidth * 0.8,
+                                child:
+                                    Text(value, textAlign: TextAlign.center)),
+                          );
+                        }).toList(),
+                      );
+                    }),
+                  )),
+              Consumer<EditTodoProvider>(
+                  builder: (context, editTodoProvider, child) {
+                return Positioned(
+                    top: sizer.editTodoTitleTextFieldTop,
+                    left: sizer.editTodoTitleTextFieldLeft,
+                    child: SizedBox(
+                        height: sizer.editTodoTitleTextFieldHeight,
+                        width: sizer.editTodoTitleTextFieldWidth,
+                        child: TextFormField(
+                          controller: editTodoProvider.addTextController(
+                              editTodoProvider.editTodoTitleTextField,
+                              initialValue: todoModel.title),
+                          focusNode: Provider.of<EditTodoProvider>(context,
+                                  listen: false)
+                              .addFocusNode(Provider.of<EditTodoProvider>(
+                                      context,
+                                      listen: false)
+                                  .editTodoTitleTextField),
+
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                          validator: (String? value) {
+                            return Provider.of<EditTodoProvider>(context,
+                                    listen: false)
+                                .editTodoTitleTextFieldValidation(value);
+                          },
+                          textAlign: TextAlign.center,
+                          onChanged: (value) {},
+
+                          style: (TextStyle(
+                              fontSize: sizer.fontSize4,
+                              color: blueShade,
+                              fontWeight: FontWeight.normal)),
+                          //more options below, uncomment to activate
+
+                          keyboardType: TextInputType.emailAddress,
+                          // cursorColor: ,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                              color: bluemid,
+                              // color: editTodoProvider.fgIconColor
+                            )),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: bluemid)),
+                            labelText: 'Title',
+                            labelStyle: (TextStyle(
+                                fontSize: sizer.fontSize4,
+                                color: bluemid,
+                                fontWeight: FontWeight.normal)),
+                            errorStyle: (TextStyle(
+                                fontSize: sizer.fontSize5,
+                                color: cherry,
+                                fontWeight: FontWeight.normal)),
+                          ),
+                          //cursorHeight: screensize.height*0.05,
+                        )));
+              }),
               Positioned(
-                  top: sizeController.editTodoDescriptionTextAreaTop,
-                  left: sizeController.editTodoDescriptionTextAreaLeft,
-                  child: GetBuilder<EditTodoController>(
-                    id: controller.editTodoDescriptionTextArea,
-                    builder: (_) {
+                  top: sizer.editTodoDescriptionTextAreaTop,
+                  left: sizer.editTodoDescriptionTextAreaLeft,
+                  child: Consumer<EditTodoProvider>(
+                    builder: (context, editTodoProvider, child) {
                       return SizedBox(
-                          height:
-                              sizeController.editTodoDescriptionTextAreaHeight,
-                          width:
-                              sizeController.editTodoDescriptionTextAreaWidth,
+                          height: sizer.editTodoDescriptionTextAreaHeight,
+                          width: sizer.editTodoDescriptionTextAreaWidth,
                           child: TextFormField(
-                            // readOnly: controller.isSignInRequesting,
-                            controller: controller.addTextController(
-                                controller.editTodoDescriptionTextArea,
-                                initialValue: ""),
-                            focusNode: controller.addFocusNode(
-                                controller.editTodoDescriptionTextArea),
+                            // readOnly: editTodoProvider.isSignInRequesting,
+                            controller: editTodoProvider.addTextController(
+                                editTodoProvider.editTodoDescriptionTextArea,
+                                initialValue: todoModel.description),
+                            focusNode: Provider.of<EditTodoProvider>(context,
+                                    listen: false)
+                                .addFocusNode(Provider.of<EditTodoProvider>(
+                                        context,
+                                        listen: false)
+                                    .editTodoDescriptionTextArea),
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
 
                             onSaved: (String? value) {},
                             validator: (String? value) {
-                              return controller
+                              return Provider.of<EditTodoProvider>(context,
+                                      listen: false)
                                   .editTodoDescriptionTextAreaValidation(value);
                             },
 
                             textAlign: TextAlign.center,
-                            onChanged: (value) {
-                              //on change ULM here
-                            },
+                            onChanged: (value) {},
 
                             //All textfield options have to be made as properties of textfield widget
                             style: (TextStyle(
-                              fontSize: sizeController.fontSize4,
+                              fontSize: sizer.fontSize4,
                               color: blueShade,
                             )),
                             keyboardType: TextInputType.text,
@@ -262,11 +258,11 @@ class EditTodoPage extends StatelessWidget {
                                   borderSide: BorderSide(color: bluemid)),
                               labelText: 'Description',
                               labelStyle: (TextStyle(
-                                  fontSize: sizeController.fontSize4,
+                                  fontSize: sizer.fontSize4,
                                   color: bluemid,
                                   fontWeight: FontWeight.normal)),
                               errorStyle: (TextStyle(
-                                  fontSize: sizeController.fontSize5,
+                                  fontSize: sizer.fontSize5,
                                   color: Colors.red,
                                   fontWeight: FontWeight.normal)),
                             ),
@@ -274,14 +270,13 @@ class EditTodoPage extends StatelessWidget {
                     },
                   )),
               Positioned(
-                  top: sizeController.editTodoRemainderTimeTop,
-                  left: sizeController.editTodoRemainderTimeLeft,
-                  child: GetBuilder<EditTodoController>(
-                    id: controller.editTodoRemainderTime,
-                    builder: (_) {
+                  top: sizer.editTodoRemainderTimeTop,
+                  left: sizer.editTodoRemainderTimeLeft,
+                  child: Consumer<EditTodoProvider>(
+                    builder: (context, editTodoProvider, child) {
                       return SizedBox(
-                        height: sizeController.editTodoRemainderTimeHeight,
-                        width: sizeController.editTodoRemainderTimeWidth,
+                        height: sizer.editTodoRemainderTimeHeight,
+                        width: sizer.editTodoRemainderTimeWidth,
                         child: ElevatedButton(
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
@@ -290,7 +285,7 @@ class EditTodoPage extends StatelessWidget {
                                             BorderRadius.circular(5.0))),
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                        controller.isDateSelected
+                                        editTodoProvider.isDateSelected
                                             ? darkmgray
                                             : blueShadeLight),
                                 // shadowColor: MaterialStateProperty.all<Color>(
@@ -309,31 +304,25 @@ class EditTodoPage extends StatelessWidget {
                                   return null; // Defer to the widget's default.
                                 })),
                             onPressed: () async {
-                              DateTime? newDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: controller.date,
-                                  firstDate: DateTime(
-                                      controller.date.year,
-                                      controller.date.month,
-                                      controller.date.day - 14),
-                                  lastDate: DateTime(
-                                      controller.date.year,
-                                      controller.date.month,
-                                      controller.date.day + 14));
-                              if (newDate == null) return;
-                              controller.date = newDate;
-                              controller.isDateSelected = true;
-                              controller
-                                  .update([controller.editTodoRemainderTime]);
+                              await Provider.of<EditTodoProvider>(context,
+                                      listen: false)
+                                  .showDatePickerWidget(context);
+                              todoModel.date = editTodoProvider.date;
+                              // if (!edittodoprovider1.isUpdatePage) {
+                              //   edittodoprovider1
+                              //       .setCurrentDropDownValue(todoModel.label);
+                              //   edittodoprovider1.setIsUpdatePage(true);
+                              // }
                             },
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                DateFormat('dd-MMM-yyyy')
-                                    .format(_.date)
-                                    .toString(),
+                                DateFormat('dd-MMM-yyyy').format(
+                                    // editTodoProvider.isUpdatePage
+                                    // editTodoProvider.date
+                                    todoModel.date).toString(),
                                 style: TextStyle(
-                                  fontSize: sizeController.fontSize4,
+                                  fontSize: sizer.fontSize4,
                                 ),
                               ),
                             )),
@@ -341,59 +330,80 @@ class EditTodoPage extends StatelessWidget {
                     },
                   )),
               Positioned(
-                top: sizeController.editTodoFormSubmitButtonTop,
-                left: sizeController.editTodoFormSubmitButtonLeft,
+                top: sizer.editTodoFormSubmitButtonTop,
+                left: sizer.editTodoFormSubmitButtonLeft,
                 child: SizedBox(
-                  height: sizeController.editTodoFormSubmitButtonHeight,
-                  width: sizeController.editTodoFormSubmitButtonWidth,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0))),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(blueShadeLight),
-                        shadowColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(blueShade),
-                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered)) {
-                            return blueShadeHover;
+                  height: sizer.editTodoFormSubmitButtonHeight,
+                  width: sizer.editTodoFormSubmitButtonWidth,
+                  child: Consumer<EditTodoProvider>(
+                      builder: (context, editTodoProvider, child) {
+                    return ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0))),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(blueShadeLight),
+                          shadowColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(blueShade),
+                          overlayColor:
+                              MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered)) {
+                              return blueShadeHover;
+                            }
+                            if (states.contains(MaterialState.pressed)) {
+                              return bluemid;
+                            }
+                            return null; // Defer to the widget's default.
+                          })),
+                      onPressed: () async {
+                        if (Provider.of<EditTodoProvider>(context,
+                                listen: false)
+                            .isFormValid()) {
+                          bool status = await Provider.of<EditTodoProvider>(
+                                  context,
+                                  listen: false)
+                              .updateTodo(todoModel, context);
+                          if (status) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              backgroundColor: navbarcolor,
+                              content: Text(
+                                'Todos Updated successfully',
+                                style: TextStyle(
+                                  color: blueShade,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              duration: Duration(seconds: 2),
+                              dismissDirection: DismissDirection.down,
+                            ));
                           }
-                          if (states.contains(MaterialState.pressed)) {
-                            return bluemid;
-                          }
-                          return null; // Defer to the widget's default.
-                        })),
-                    onPressed: () async {
-                      if (controller.isFormValid()) {
-                        await controller
-                            .updateTodo(controller.todoModel.createdTime);
-                        // Get.back();
-                      } else {
-                        controller.focusOnNextInvalid();
-                      }
-                      // Todo logic for add and update data in firebase
-                     
-                      // controller.isUpdatePage?
-                    },
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: sizeController.fontSize4,
+                        } else {
+                          Provider.of<EditTodoProvider>(context, listen: false)
+                              .focusOnNextInvalid();
+                        }
+                      },
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            fontSize: sizer.fontSize4,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 ),
               ),
             ]),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

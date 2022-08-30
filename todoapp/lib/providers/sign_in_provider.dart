@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:todoapp/controllers/auth_controller.dart';
+import 'package:todoapp/providers/auth_provider.dart';
 
-class SignInController extends GetxController {
+class SignInProvider with ChangeNotifier {
   // ? widget names
   final String appTitle = 'appTitle';
   final String signInEmailTextField = 'signInEmailTextField';
   final String signInPasswordField = 'signInPasswordField';
   final String signInButton = 'signInButton';
-  late AuthController authController;
+  // late AuthProvider authProvider;
 
   // ? password field variable
   bool _passwordVisible = false;
@@ -18,14 +18,17 @@ class SignInController extends GetxController {
   bool get isSignInRequesting => _isSignInRequesting;
 
   // Textfield variables
-  late Map<String, TextEditingController>
-      textControllers; //map of all fields controllers
+  Map<String, TextEditingController> textControllers =
+      <String, TextEditingController>{}; //map of all fields controllers
 
-  late Map<String, FocusNode> focusNodes; //map of all fields focus nodes
+  Map<String, FocusNode> focusNodes =
+      <String, FocusNode>{}; //map of all fields focus nodes
 
-  late Map<String, bool> validations; //map of all fields validation status
+  Map<String, bool> validations =
+      <String, bool>{}; //map of all fields validation status
 
-  late Map<String, bool> enabledStatus; //map of all enabled fields status
+  Map<String, bool> enabledStatus =
+      <String, bool>{}; //map of all enabled fields status
 
   // TextField validation functions
   TextEditingController? getTextController(String id) {
@@ -64,6 +67,7 @@ class SignInController extends GetxController {
   void updateValidation(String id, bool change) {
     validations[id] = change;
     validations.update(id, (value) => change);
+    notifyListeners();
   }
 
   bool? isEnabled(String id) {
@@ -82,6 +86,7 @@ class SignInController extends GetxController {
     validations.forEach((key, value) {
       isValid = isValid && value;
     });
+    // notifyListeners();
     return isValid;
   }
 
@@ -94,19 +99,17 @@ class SignInController extends GetxController {
         break;
       }
     }
+    // notifyListeners();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    authController = Get.find<AuthController>();
-    textControllers = <String, TextEditingController>{};
-    focusNodes = <String, FocusNode>{};
-    validations = <String, bool>{};
-    enabledStatus = <String, bool>{};
-  }
+  // @override
+  // void onInit(BuildContext context) {
+  //   // super.onInit();
+  //   // authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-  @override
+  // }
+
+  // @override
   void onClose() {
     textControllers.forEach((key, value) {
       value.dispose();
@@ -115,7 +118,7 @@ class SignInController extends GetxController {
     focusNodes.forEach((key, value) {
       value.dispose();
     });
-    super.onClose();
+    // super.onClose();
   }
 
   // UI logic modules
@@ -128,7 +131,7 @@ class SignInController extends GetxController {
     } else {
       updateValidation(signInEmailTextField, true);
     }
-
+    // notifyListeners();
     return getValidation(signInEmailTextField)
         ? null
         : 'Please Enter Valid Email';
@@ -139,7 +142,8 @@ class SignInController extends GetxController {
 
   void togglePasswordVisibleState() {
     _passwordVisible = !_passwordVisible;
-    update([signInPasswordField]);
+    // update([signInPasswordField]);
+    notifyListeners();
   }
 
   String? signInPasswordFieldValidation(String? value) {
@@ -157,7 +161,7 @@ class SignInController extends GetxController {
 
   // ? sign in button methods
   Future<void> signInAction(BuildContext context) async {
-    final authResult = await authController.signIn(
+    final authResult = await AuthProvider.signIn(
         textControllers[signInEmailTextField]!.text.trim(),
         textControllers[signInPasswordField]!.text.trim());
 
