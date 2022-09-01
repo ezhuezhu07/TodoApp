@@ -208,52 +208,39 @@ class AddTodoProvider extends ChangeNotifier {
           .set(todoModel.toJson())
           .then((value) async {
         print('create todo added successfully');
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          backgroundColor: navbarcolor,
-          content: Text(
-            'Created Todos added successfully',
-            style: TextStyle(
-              color: blueShade,
-              fontSize: 18,
-            ),
-          ),
-          duration: Duration(seconds: 2),
-          dismissDirection: DismissDirection.down,
-        ));
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //   backgroundColor: navbarcolor,
+        //   content: Text(
+        //     'Created Todos added successfully',
+        //     style: TextStyle(
+        //       color: blueShade,
+        //       fontSize: 18,
+        //     ),
+        //   ),
+        //   duration: Duration(seconds: 2),
+        //   dismissDirection: DismissDirection.down,
+        // ));
         await Provider.of<TodoDashboardProvider>(context, listen: false)
             .initializeTodosCount();
         return true;
-      }).catchError((onError) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: navbarcolor,
-          content: Text(
-            '$onError',
-            style: const TextStyle(
-              color: blueShade,
-              fontSize: 18,
-            ),
-          ),
-          duration: const Duration(seconds: 2),
-          dismissDirection: DismissDirection.down,
-        ));
       });
 
       // setShowTaskDoneAnimation(true);
       // Future.delayed(const Duration(seconds: 2));
       // setShowTaskDoneAnimation(false);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: navbarcolor,
-        content: Text(
-          '$e',
-          style: const TextStyle(
-            color: blueShade,
-            fontSize: 18,
-          ),
-        ),
-        duration: const Duration(seconds: 2),
-        dismissDirection: DismissDirection.down,
-      ));
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   backgroundColor: navbarcolor,
+      //   content: Text(
+      //     '$e',
+      //     style: const TextStyle(
+      //       color: blueShade,
+      //       fontSize: 18,
+      //     ),
+      //   ),
+      //   duration: const Duration(seconds: 2),
+      //   dismissDirection: DismissDirection.down,
+      // ));
       return false;
     }
     return false;

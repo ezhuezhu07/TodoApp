@@ -16,7 +16,7 @@ import 'package:todoapp/widgets/todo_list_widget.dart';
 class TodoDashBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.read<SizeProvider>().setSize(context);
+    Provider.of<SizeProvider>(context, listen: false).setSize(context);
     context.read<TodoDashboardProvider>().initializeTodosCount();
     return Consumer<SizeProvider>(builder: (context, sizeProvider, child) {
       return Scaffold(

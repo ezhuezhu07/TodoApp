@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:todoapp/colors.dart';
 import 'package:todoapp/consts.dart';
@@ -416,15 +415,12 @@ class AddTodoPage extends StatelessWidget {
                         },
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: addTodoProvider.showTaskDoneAnimation
-                              ? Center(
-                                  child: Lottie.asset('assets/task_done.json'))
-                              : Text(
-                                  'Add',
-                                  style: TextStyle(
-                                    fontSize: sizer.fontSize4,
-                                  ),
-                                ),
+                          child: Text(
+                            'Add',
+                            style: TextStyle(
+                              fontSize: sizer.fontSize4,
+                            ),
+                          ),
                         ),
                       ),
                     ),

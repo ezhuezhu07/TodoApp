@@ -58,7 +58,7 @@ class TodoList extends StatelessWidget {
     print('Todo list is building');
     return Consumer<TodoDashboardProvider>(builder: (context, _, child) {
       return FutureBuilder<List<TodoModel>>(
-          initialData: _.todoList,
+          initialData: const <TodoModel>[],
           future: provider.fetchTodo(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting &&
