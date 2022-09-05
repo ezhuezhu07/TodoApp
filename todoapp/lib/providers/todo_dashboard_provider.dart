@@ -10,12 +10,18 @@ class TodoDashboardProvider with ChangeNotifier {
   final String todoListView = 'todoListView';
   final String shimmerAnimation = 'shimmerAnimation';
   // int todosCount = 0;
-  // int completedTodosCount = 0;
+  int completedTodosCount = 0;
   // int planningTodosCount = 0;
   // int developmentTodosCount = 0;
   // int testingTodosCount = 0;
   // int deploymentTodosCount = 0;
+  int personalTodoCount = 0;
+  int businessTodoCount = 0;
+  int totalTodosCount = 0;
   List<TodoModel> _todoList = [];
+  List<TodoModel> _allTodoList = [];
+  List<TodoModel> _allTodoCompletedList = [];
+
   List<String> todoTypes = [
     'Todos',
     'Completed',
@@ -34,6 +40,9 @@ class TodoDashboardProvider with ChangeNotifier {
   };
 
   List<TodoModel> get todoList => _todoList;
+
+  List<TodoModel> get allTodoList => _allTodoList;
+  List<TodoModel> get allTodoCompletedList => _allTodoCompletedList;
 
   bool _shimmerEnabled = true;
   String selectedCard = 'Todos';
@@ -160,15 +169,10 @@ class TodoDashboardProvider with ChangeNotifier {
   Future<void> initializeTodosCount() async {
     print('initializing todos count');
     todoCountList.clear();
-    todoCountList = {
-      'Todos': 0,
-      'Completed': 0,
-      'Planning': 0,
-      'Development': 0,
-      'Testing': 0,
-      'Deployment': 0
-    };
-
+    personalTodoCount = 0;
+    completedTodosCount = 0;
+    businessTodoCount = 0;
+    totalTodosCount = 0;
     try {
       await FirebaseFirestore.instance
           .collection(AppConst.todoDatabaseName)
@@ -178,31 +182,41 @@ class TodoDashboardProvider with ChangeNotifier {
           .get()
           .then((querySnapshot) {
         print('length from firebase ${querySnapshot.docs.length}');
+
         for (var element in querySnapshot.docs) {
           final todo = TodoModel.fromJson(element.data());
+
           if (todo.isCompleted == false) {
-            todoCountList['Todos'] = todoCountList['Todos']! + 1;
+            if (todo.label == 'Personal') {
+              totalTodosCount += 1;
+              personalTodoCount += 1;
+            } else {
+              totalTodosCount += 1;
+              businessTodoCount += 1;
+            }
           } else {
-            todoCountList['Completed'] = todoCountList['Completed']! + 1;
+            completedTodosCount += 1;
+            if (todo.label == 'Personal' || todo.label == 'Business')
+              totalTodosCount += 1;
           }
 
-          switch (todo.label) {
-            case 'Planning':
-              todoCountList['Planning'] = todoCountList['Planning']! + 1;
-              break;
+          // switch (todo.label) {
+          //   case 'Planning':
+          //     todoCountList['Planning'] = todoCountList['Planning']! + 1;
+          //     break;
 
-            case 'Development':
-              todoCountList['Development'] = todoCountList['Development']! + 1;
-              break;
+          //   case 'Development':
+          //     todoCountList['Development'] = todoCountList['Development']! + 1;
+          //     break;
 
-            case 'Testing':
-              todoCountList['Testing'] = todoCountList['Testing']! + 1;
-              break;
+          //   case 'Testing':
+          //     todoCountList['Testing'] = todoCountList['Testing']! + 1;
+          //     break;
 
-            case 'Deployment':
-              todoCountList['Deployment'] = todoCountList['Deployment']! + 1;
-              break;
-          }
+          //   case 'Deployment':
+          //     todoCountList['Deployment'] = todoCountList['Deployment']! + 1;
+          //     break;
+          // }
         }
       });
     } catch (e) {
@@ -212,5 +226,52 @@ class TodoDashboardProvider with ChangeNotifier {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     notifyListeners();
     // });
+  }
+
+  Future<List<TodoModel>> fetchInboxData() async {
+    _allTodoList = <TodoModel>[];
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppConst.todoDatabaseName)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection(AppConst.todoUserDatabaseName)
+          .where('isCompleted', isEqualTo: false)
+          .orderBy(TodoFieldData.createdTime, descending: true)
+          .get()
+          .then((querySnapshot) {
+        for (var element in querySnapshot.docs) {
+          _allTodoList.add(TodoModel.fromJson(element.data()));
+          // print(_todoList.last.toJson());
+        }
+      });
+    } catch (e) {
+      print('error $e');
+    }
+    print('Totoal no of todos: ${_allTodoList.length}');
+    return allTodoList;
+  }
+
+  Future<List<TodoModel>> fetchCompletedTodoData() async {
+    _allTodoCompletedList = <TodoModel>[];
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppConst.todoDatabaseName)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection(AppConst.todoUserDatabaseName)
+          .where('isCompleted', isEqualTo: true)
+          .orderBy(TodoFieldData.createdTime, descending: true)
+          .get()
+          .then((querySnapshot) {
+        // _allTodoCompletedList = [];
+        for (var element in querySnapshot.docs) {
+          // print('Completed todos: ${element.data()}');
+          _allTodoCompletedList.add(TodoModel.fromJson(element.data()));
+        }
+      });
+    } catch (e) {
+      print('error $e');
+    }
+    print('Totoal no of todos: ${allTodoCompletedList.length}');
+    return allTodoCompletedList;
   }
 }

@@ -24,7 +24,7 @@ class AddTodoPage extends StatelessWidget {
           body: Container(
             height: sizer.screenHeight,
             width: sizer.screenWidth,
-            color: darkmgray,
+            color: uiBcakgroundColor,
             child: Stack(children: [
               Positioned(
                 top: sizer.screenHeight * 0.05,
@@ -37,8 +37,8 @@ class AddTodoPage extends StatelessWidget {
                       child: GestureDetector(
                         child: FaIcon(
                           FontAwesomeIcons.arrowLeft,
-                          color: blueShade,
-                          size: sizer.fontSize3,
+                          color: uiWhiteColor,
+                          size: sizer.fontSize5 * 1.25,
                         ),
                         onTap: () {
                           {
@@ -66,10 +66,10 @@ class AddTodoPage extends StatelessWidget {
                       child: Text(
                         'Add new thing',
                         style: TextStyle(
-                          color: blueShade,
-                          fontSize: sizer.fontSize1,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: uiWhiteColor,
+                            fontSize: sizer.fontSize3,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Rozanova_Medium'),
                         textAlign: TextAlign.center,
                       ),
                     )),
@@ -80,17 +80,22 @@ class AddTodoPage extends StatelessWidget {
                       top: sizer.addTodoTypeIconTop,
                       left: sizer.addTodoTypeIconLeft,
                       child: SizedBox(
-                          height: sizer.addTodoTypeIconHeight,
-                          width: sizer.addTodoTypeIconWidth,
+                          // height: sizer.addTodoTypeIconHeight,
+                          // width: sizer.addTodoTypeIconWidth,
                           child: CircleAvatar(
-                            radius: sizer.fontSize5,
-                            backgroundColor: darkmpurple,
-                            child: Icon(
-                              AppConst.labelIcons[
-                                  addTodoProvider.currentDropDownValue],
-                              size: sizer.fontSize1,
-                            ),
-                          )));
+                        backgroundColor: gray,
+                        radius: sizer.fontSize3 * 1.075,
+                        child: CircleAvatar(
+                          radius: sizer.fontSize3,
+                          backgroundColor: uiBcakgroundColor,
+                          child: Icon(
+                            AppConst.labelIcons[
+                                addTodoProvider.currentDropDownValue],
+                            color: uiButtonColor,
+                            size: sizer.fontSize3,
+                          ),
+                        ),
+                      )));
                 },
               ),
               Positioned(
@@ -111,15 +116,17 @@ class AddTodoPage extends StatelessWidget {
                           isExpanded: true,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: bluemid)),
+                                borderSide: BorderSide(color: gray)),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: bluemid)),
+                                borderSide: BorderSide(color: gray)),
                           ),
                           style: TextStyle(
+                            fontFamily: 'Rozanova_Medium',
+                            fontSize: sizer.fontSize5 * 1.25,
                             // fontSize: sizer.screenHeight * 0.033,
-                            color: blueShade,
+                            color: uiWhiteColor,
                           ),
-                          dropdownColor: darkmgray,
+                          dropdownColor: uiBcakgroundColor,
                           onChanged: (String? newValue) {
                             if (newValue !=
                                 Provider.of<AddTodoProvider>(context,
@@ -135,6 +142,7 @@ class AddTodoPage extends StatelessWidget {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: SizedBox(
+                                  height: sizer.screenHeight * 0.05,
                                   width: sizer.screenWidth * 0.8,
                                   child:
                                       Text(value, textAlign: TextAlign.center)),
@@ -148,13 +156,6 @@ class AddTodoPage extends StatelessWidget {
                         );
                       },
                     ),
-                    // Consumer<AddTodoProvider>(
-                    //     builder: (context, addTodoProvider, child) {
-                    //       //note tbd all dimensioning of text etc needs to be exposed as options to be passed on
-                    //       //for the widget, this has not been done for this example
-
-                    //       return
-                    //     }),
                   )),
               Consumer<AddTodoProvider>(
                 builder: (context, addTodoProvider, child) {
@@ -186,30 +187,33 @@ class AddTodoPage extends StatelessWidget {
                             onChanged: (value) {},
 
                             style: (TextStyle(
-                                fontSize: sizer.fontSize4,
-                                color: blueShade,
+                                fontSize: sizer.fontSize3 * 0.75,
+                                color: uiWhiteColor,
+                                fontFamily: 'Rozanova_Medium',
                                 fontWeight: FontWeight.normal)),
                             //more options below, uncomment to activate
 
                             keyboardType: TextInputType.emailAddress,
-                            // cursorColor: ,
+                            cursorColor: uiWhiteColor,
                             obscureText: false,
                             decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                color: bluemid,
+                                color: gray,
                                 // color: addTodoProvider.fgIconColor
                               )),
                               focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
+                                  borderSide: BorderSide(color: gray)),
                               labelText: 'Title',
                               labelStyle: (TextStyle(
-                                  fontSize: sizer.fontSize4,
-                                  color: bluemid,
+                                  fontSize: sizer.fontSize5 * 1.25,
+                                  fontFamily: 'Rozanova_Medium',
+                                  color: uiWhiteColor,
                                   fontWeight: FontWeight.normal)),
                               errorStyle: (TextStyle(
                                   fontSize: sizer.fontSize5,
                                   color: cherry,
+                                  fontFamily: 'Rozanova_Medium',
                                   fontWeight: FontWeight.normal)),
                             ),
                             //cursorHeight: screensize.height*0.05,
@@ -259,24 +263,27 @@ class AddTodoPage extends StatelessWidget {
 
                             //All textfield options have to be made as properties of textfield widget
                             style: (TextStyle(
-                              fontSize: sizer.fontSize4,
-                              color: blueShade,
+                              fontSize: sizer.fontSize5 * 1.25,
+                              color: uiWhiteColor,
+                              fontFamily: 'Rozanova_Medium',
                             )),
                             keyboardType: TextInputType.multiline,
-                            cursorColor: blueShade,
+                            cursorColor: uiWhiteColor,
 
                             decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
+                                  borderSide: BorderSide(color: gray)),
                               focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
+                                  borderSide: BorderSide(color: gray)),
                               labelText: 'Description',
                               labelStyle: (TextStyle(
-                                  fontSize: sizer.fontSize4,
-                                  color: bluemid,
+                                  fontSize: sizer.fontSize5 * 1.25,
+                                  fontFamily: 'Rozanova_Medium',
+                                  color: uiWhiteColor,
                                   fontWeight: FontWeight.normal)),
                               errorStyle: (TextStyle(
                                   fontSize: sizer.fontSize5,
+                                  fontFamily: 'Rozanova_Medium',
                                   color: Colors.red,
                                   fontWeight: FontWeight.normal)),
                             ),
@@ -306,20 +313,16 @@ class AddTodoPage extends StatelessWidget {
                               Provider.of<AddTodoProvider>(context,
                                           listen: false)
                                       .isDateSelected
-                                  ? darkmgray
-                                  : blueShadeLight),
-                          // shadowColor: MaterialStateProperty.all<Color>(
-                          //     Colors.black),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(blueShade),
+                                  ? uiBcakgroundColor
+                                  : uiBcakgroundColor),
                           overlayColor:
                               MaterialStateProperty.resolveWith<Color?>(
                                   (Set<MaterialState> states) {
                             if (states.contains(MaterialState.hovered)) {
-                              return blueShadeHover;
+                              return uiBcakgroundColor;
                             }
                             if (states.contains(MaterialState.pressed)) {
-                              return bluemid;
+                              return uiBcakgroundColor;
                             }
                             return null; // Defer to the widget's default.
                           })),
@@ -337,7 +340,11 @@ class AddTodoPage extends StatelessWidget {
                                   .toString()
                               : 'Pick a date',
                           style: TextStyle(
-                            fontSize: sizer.fontSize4,
+                            fontFamily: addTodoProvider.isDateSelected
+                                ? 'Sans-Serif'
+                                : 'Rozanova_Medium',
+                            color: uiWhiteColor,
+                            fontSize: sizer.fontSize5 * 1.25,
                           ),
                         ),
                       ),
@@ -356,30 +363,16 @@ class AddTodoPage extends StatelessWidget {
                     top: sizer.addTodoFormSubmitButtonTop,
                     left: sizer.addTodoFormSubmitButtonLeft,
                     child: SizedBox(
-                      height: sizer.addTodoFormSubmitButtonHeight,
+                      height: sizer.addTodoFormSubmitButtonHeight * 1.25,
                       width: sizer.addTodoFormSubmitButtonWidth,
                       child: ElevatedButton(
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0))),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                blueShadeLight),
-                            shadowColor:
-                                MaterialStateProperty.all<Color>(Colors.black),
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(blueShade),
-                            overlayColor:
-                                MaterialStateProperty.resolveWith<Color?>(
-                                    (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered)) {
-                                return blueShadeHover;
-                              }
-                              if (states.contains(MaterialState.pressed)) {
-                                return bluemid;
-                              }
-                              return null; // Defer to the widget's default.
-                            })),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0))),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(uiButtonColor),
+                        ),
                         onPressed: () async {
                           // Todo logic for add and update data in firebase
                           if (Provider.of<AddTodoProvider>(context,
@@ -394,13 +387,14 @@ class AddTodoPage extends StatelessWidget {
                                 .createTodo(context);
                             if (status) {
                               ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
+                                  .showSnackBar(SnackBar(
                                 backgroundColor: navbarcolor,
                                 content: Text(
                                   'Todos added successfully',
                                   style: TextStyle(
-                                    color: blueShade,
-                                    fontSize: 18,
+                                    fontFamily: 'Rozanova_Medium',
+                                    color: uiWhiteColor,
+                                    fontSize: sizer.fontSize5 * 1.25,
                                   ),
                                 ),
                                 duration: Duration(seconds: 2),
@@ -418,7 +412,8 @@ class AddTodoPage extends StatelessWidget {
                           child: Text(
                             'Add',
                             style: TextStyle(
-                              fontSize: sizer.fontSize4,
+                              fontFamily: 'Rozanova_Medium',
+                              fontSize: sizer.fontSize5 * 1.25,
                             ),
                           ),
                         ),

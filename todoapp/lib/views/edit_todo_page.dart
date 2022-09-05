@@ -29,7 +29,7 @@ class EditTodoPage extends StatelessWidget {
           body: Container(
             height: sizer.screenHeight,
             width: sizer.screenWidth,
-            color: darkmgray,
+            color: uiBcakgroundColor,
             child: Stack(children: [
               Positioned(
                 top: sizer.screenHeight * 0.05,
@@ -42,8 +42,8 @@ class EditTodoPage extends StatelessWidget {
                       child: GestureDetector(
                         child: FaIcon(
                           FontAwesomeIcons.arrowLeft,
-                          color: blueShade,
-                          size: sizer.fontSize3,
+                          color: uiWhiteColor,
+                          size: sizer.fontSize5 * 1.25,
                         ),
                         onTap: () {
                           {
@@ -68,10 +68,10 @@ class EditTodoPage extends StatelessWidget {
                       child: Text(
                         'Update the thing',
                         style: TextStyle(
-                          color: blueShade,
-                          fontSize: sizer.fontSize1,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: uiWhiteColor,
+                            fontSize: sizer.fontSize3,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Rozanova_Medium'),
                         textAlign: TextAlign.center,
                       ),
                     )),
@@ -82,28 +82,33 @@ class EditTodoPage extends StatelessWidget {
                       top: sizer.editTodoTypeIconTop,
                       left: sizer.editTodoTypeIconLeft,
                       child: SizedBox(
-                          height: sizer.editTodoTypeIconHeight,
-                          width: sizer.editTodoTypeIconWidth,
+                          // height: sizer.editTodoTypeIconHeight,
+                          // width: sizer.editTodoTypeIconWidth,
                           child: CircleAvatar(
-                            radius: sizer.fontSize5,
-                            backgroundColor: darkmpurple,
-                            child: Icon(
-                              AppConst.labelIcons[
-                                  // editTodoProvider.isUpdatePage
-                                  // editTodoProvider.currentDropDownValue
-                                  todoModel.label
-                                  // editTodoProvider.todoModelData.label
-                                  ],
-                              size: sizer.fontSize1,
-                            ),
-                          )));
+                        backgroundColor: gray,
+                        radius: sizer.fontSize3 * 1.075,
+                        child: CircleAvatar(
+                          radius: sizer.fontSize3,
+                          backgroundColor: uiBcakgroundColor,
+                          child: Icon(
+                            AppConst.labelIcons[
+                                // editTodoProvider.isUpdatePage
+                                // editTodoProvider.currentDropDownValue
+                                todoModel.label
+                                // editTodoProvider.todoModelData.label
+                                ],
+                            color: uiButtonColor,
+                            size: sizer.fontSize3,
+                          ),
+                        ),
+                      )));
                 },
               ),
               Positioned(
                   top: sizer.editTodoTypeListTop,
                   left: sizer.editTodoTypeListLeft,
                   child: SizedBox(
-                    height: sizer.editTodoTypeListHeight,
+                    height: sizer.editTodoTypeListHeight * 1.5,
                     width: sizer.editTodoTypeListWidth,
 
                     //drop down item widget below
@@ -117,15 +122,16 @@ class EditTodoPage extends StatelessWidget {
                         isExpanded: true,
                         decoration: InputDecoration(
                           enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: bluemid)),
+                              borderSide: BorderSide(color: gray)),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: bluemid)),
+                              borderSide: BorderSide(color: gray)),
                         ),
                         style: TextStyle(
-                          // fontSize: sizer.screenHeight * 0.033,
-                          color: blueShade,
+                          fontFamily: 'Rozanova_Medium',
+                          fontSize: sizer.fontSize5 * 1.25,
+                          color: uiWhiteColor,
                         ),
-                        dropdownColor: darkmgray,
+                        dropdownColor: uiBcakgroundColor,
 
                         onChanged: (String? newValue) {
                           if (newValue !=
@@ -144,6 +150,7 @@ class EditTodoPage extends StatelessWidget {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: SizedBox(
+                                height: sizer.screenHeight * 0.05,
                                 width: sizer.screenWidth * 0.8,
                                 child:
                                     Text(value, textAlign: TextAlign.center)),
@@ -182,8 +189,9 @@ class EditTodoPage extends StatelessWidget {
                           onChanged: (value) {},
 
                           style: (TextStyle(
-                              fontSize: sizer.fontSize4,
-                              color: blueShade,
+                              fontSize: sizer.fontSize3 * 0.75,
+                              color: uiWhiteColor,
+                              fontFamily: 'Rozanova_Medium',
                               fontWeight: FontWeight.normal)),
                           //more options below, uncomment to activate
 
@@ -193,19 +201,21 @@ class EditTodoPage extends StatelessWidget {
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                              color: bluemid,
-                              // color: editTodoProvider.fgIconColor
+                              color: gray,
+                              // color: addTodoProvider.fgIconColor
                             )),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: bluemid)),
+                                borderSide: BorderSide(color: gray)),
                             labelText: 'Title',
                             labelStyle: (TextStyle(
-                                fontSize: sizer.fontSize4,
-                                color: bluemid,
+                                fontSize: sizer.fontSize5 * 1.25,
+                                fontFamily: 'Rozanova_Medium',
+                                color: uiWhiteColor,
                                 fontWeight: FontWeight.normal)),
                             errorStyle: (TextStyle(
                                 fontSize: sizer.fontSize5,
                                 color: cherry,
+                                fontFamily: 'Rozanova_Medium',
                                 fontWeight: FontWeight.normal)),
                           ),
                           //cursorHeight: screensize.height*0.05,
@@ -220,6 +230,8 @@ class EditTodoPage extends StatelessWidget {
                           height: sizer.editTodoDescriptionTextAreaHeight,
                           width: sizer.editTodoDescriptionTextAreaWidth,
                           child: TextFormField(
+                            minLines: 3,
+                            maxLines: 6,
                             // readOnly: editTodoProvider.isSignInRequesting,
                             controller: editTodoProvider.addTextController(
                                 editTodoProvider.editTodoDescriptionTextArea,
@@ -245,24 +257,27 @@ class EditTodoPage extends StatelessWidget {
 
                             //All textfield options have to be made as properties of textfield widget
                             style: (TextStyle(
-                              fontSize: sizer.fontSize4,
-                              color: blueShade,
+                              fontSize: sizer.fontSize5 * 1.25,
+                              color: uiWhiteColor,
+                              fontFamily: 'Rozanova_Medium',
                             )),
                             keyboardType: TextInputType.text,
-                            cursorColor: blueShade,
+                            cursorColor: uiWhiteColor,
 
                             decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
+                                  borderSide: BorderSide(color: gray)),
                               focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: bluemid)),
+                                  borderSide: BorderSide(color: gray)),
                               labelText: 'Description',
                               labelStyle: (TextStyle(
-                                  fontSize: sizer.fontSize4,
-                                  color: bluemid,
+                                  fontSize: sizer.fontSize5 * 1.25,
+                                  fontFamily: 'Rozanova_Medium',
+                                  color: uiWhiteColor,
                                   fontWeight: FontWeight.normal)),
                               errorStyle: (TextStyle(
                                   fontSize: sizer.fontSize5,
+                                  fontFamily: 'Rozanova_Medium',
                                   color: Colors.red,
                                   fontWeight: FontWeight.normal)),
                             ),
@@ -285,21 +300,19 @@ class EditTodoPage extends StatelessWidget {
                                             BorderRadius.circular(5.0))),
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                        editTodoProvider.isDateSelected
-                                            ? darkmgray
-                                            : blueShadeLight),
-                                // shadowColor: MaterialStateProperty.all<Color>(
-                                //     Colors.black),
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(blueShade),
+                                        Provider.of<EditTodoProvider>(context,
+                                                    listen: false)
+                                                .isDateSelected
+                                            ? uiBcakgroundColor
+                                            : uiBcakgroundColor),
                                 overlayColor:
                                     MaterialStateProperty.resolveWith<Color?>(
                                         (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.hovered)) {
-                                    return blueShadeHover;
+                                    return uiBcakgroundColor;
                                   }
                                   if (states.contains(MaterialState.pressed)) {
-                                    return bluemid;
+                                    return uiBcakgroundColor;
                                   }
                                   return null; // Defer to the widget's default.
                                 })),
@@ -322,7 +335,9 @@ class EditTodoPage extends StatelessWidget {
                                     // editTodoProvider.date
                                     todoModel.date).toString(),
                                 style: TextStyle(
-                                  fontSize: sizer.fontSize4,
+                                  fontFamily: 'Sans-Serif',
+                                  color: uiWhiteColor,
+                                  fontSize: sizer.fontSize5 * 1.25,
                                 ),
                               ),
                             )),
@@ -333,32 +348,17 @@ class EditTodoPage extends StatelessWidget {
                 top: sizer.editTodoFormSubmitButtonTop,
                 left: sizer.editTodoFormSubmitButtonLeft,
                 child: SizedBox(
-                  height: sizer.editTodoFormSubmitButtonHeight,
+                  height: sizer.editTodoFormSubmitButtonHeight * 1.25,
                   width: sizer.editTodoFormSubmitButtonWidth,
                   child: Consumer<EditTodoProvider>(
                       builder: (context, editTodoProvider, child) {
                     return ElevatedButton(
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0))),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(blueShadeLight),
-                          shadowColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(blueShade),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered)) {
-                              return blueShadeHover;
-                            }
-                            if (states.contains(MaterialState.pressed)) {
-                              return bluemid;
-                            }
-                            return null; // Defer to the widget's default.
-                          })),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0))),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(uiButtonColor),
+                      ),
                       onPressed: () async {
                         if (Provider.of<EditTodoProvider>(context,
                                 listen: false)
@@ -370,11 +370,11 @@ class EditTodoPage extends StatelessWidget {
                           if (status) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              backgroundColor: navbarcolor,
+                              backgroundColor: uiBcakgroundColor,
                               content: Text(
                                 'Todos Updated successfully',
                                 style: TextStyle(
-                                  color: blueShade,
+                                  color: uiWhiteColor,
                                   fontSize: 18,
                                 ),
                               ),
@@ -392,7 +392,8 @@ class EditTodoPage extends StatelessWidget {
                         child: Text(
                           'Save',
                           style: TextStyle(
-                            fontSize: sizer.fontSize4,
+                            fontFamily: 'Rozanova_Medium',
+                            fontSize: sizer.fontSize5 * 1.25,
                           ),
                         ),
                       ),

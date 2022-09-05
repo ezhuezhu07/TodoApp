@@ -155,6 +155,16 @@ class SizeProvider with ChangeNotifier {
   late double editTodoFormSubmitButtonHeight;
   late double editTodoFormSubmitButtonWidth;
 
+  late double todoMainPageTopViewTop;
+  late double todoMainPageTopViewLeft;
+  late double todoMainPageTopViewHeight;
+  late double todoMainPageTopViewWidth;
+
+  late double todoMainPageListViewTop;
+  late double todoMainPageListViewLeft;
+  late double todoMainPageListViewHeight;
+  late double todoMainPageListViewWidth;
+
   // font size
   late double fontSize1;
   late double fontSize2;
@@ -246,15 +256,15 @@ class SizeProvider with ChangeNotifier {
     todoListViewWidth = screenWidth;
 
     // create Todo Page
-    addPageTitleTop = screenHeight * 0.1;
+    addPageTitleTop = screenHeight * 0.05;
     addPageTitleLeft = screenWidth * 0.05;
     addPageTitleHeight = screenHeight * (0.05);
     addPageTitleWidth = screenWidth * 0.9;
 
     addTodoTypeIconTop = screenHeight * 0.175;
-    addTodoTypeIconLeft = screenWidth * 0.05;
-    addTodoTypeIconHeight = screenHeight * (0.1);
-    addTodoTypeIconWidth = screenWidth * 0.9;
+    addTodoTypeIconLeft = screenWidth * 0.4;
+    addTodoTypeIconHeight = screenHeight * (0.05);
+    addTodoTypeIconWidth = screenHeight * (0.05);
 
     addTodoTypeListTop = screenHeight * (0.3);
     addTodoTypeListLeft = screenWidth * 0.05;
@@ -282,15 +292,15 @@ class SizeProvider with ChangeNotifier {
     addTodoFormSubmitButtonWidth = screenWidth * 0.9;
 
     // update
-    editPageTitleTop = screenHeight * 0.1;
+    editPageTitleTop = screenHeight * 0.05;
     editPageTitleLeft = screenWidth * 0.05;
     editPageTitleHeight = screenHeight * (0.05);
     editPageTitleWidth = screenWidth * 0.9;
 
     editTodoTypeIconTop = screenHeight * 0.175;
-    editTodoTypeIconLeft = screenWidth * 0.05;
-    editTodoTypeIconHeight = screenHeight * (0.1);
-    editTodoTypeIconWidth = screenWidth * 0.9;
+    editTodoTypeIconLeft = screenWidth * 0.4;
+    editTodoTypeIconHeight = screenHeight * (0.05);
+    editTodoTypeIconWidth = screenHeight * (0.05);
 
     editTodoTypeListTop = screenHeight * (0.3);
     editTodoTypeListLeft = screenWidth * 0.05;
@@ -316,6 +326,16 @@ class SizeProvider with ChangeNotifier {
     editTodoFormSubmitButtonLeft = screenWidth * 0.05;
     editTodoFormSubmitButtonHeight = screenHeight * (0.05);
     editTodoFormSubmitButtonWidth = screenWidth * 0.9;
+
+    todoMainPageTopViewTop = screenHeight * 0.025;
+    todoMainPageTopViewLeft = 0;
+    todoMainPageTopViewHeight = screenHeight * 0.325;
+    todoMainPageTopViewWidth = screenWidth;
+
+    todoMainPageListViewTop = screenHeight * 0.37;
+    todoMainPageListViewLeft = 0;
+    todoMainPageListViewHeight = screenHeight * 0.63;
+    todoMainPageListViewWidth = screenWidth;
 
     // font size
     fontSize1 = screenHeight * 0.055;

@@ -85,3 +85,10 @@ const darkmpurplelight = Color(0x50400080);
 const darkmpurplehover = Color(0x90400080);
 
 const navbarcolor = Color(0xff1e1e30);
+
+//
+const uiBcakgroundColor = Color(0xff46549E);
+const uiButtonColor = Color(0xff89cbf0);
+const uiWhiteColor = Color(0xffFEFEFE);
+const uiGreyColor = Color(0xff3d415b);
+const uiLightFontColor = Color(0xffe7e7e7);

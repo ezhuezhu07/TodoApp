@@ -26,7 +26,7 @@ class AddTodoProvider extends ChangeNotifier {
 
   DateTime _date = DateTime.now();
   //drop down
-  String currentDropDownValue = 'Planning'; //present value of the dropdown
+  String currentDropDownValue = 'Personal'; //present value of the dropdown
   List<String> dropDownValues = AppConst.labelIcons.keys.toList();
 
   Map<String, TextEditingController> textControllers =
@@ -137,18 +137,6 @@ class AddTodoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  @override
-  void onClose() {
-    textControllers.forEach((key, value) {
-      value.dispose();
-    });
-
-    focusNodes.forEach((key, value) {
-      value.dispose();
-    });
-    // super.onClose();
-  }
-
   // UI logic modules
 
   // ? title Field methods
@@ -190,7 +178,6 @@ class AddTodoProvider extends ChangeNotifier {
   }
 
   Future<bool> createTodo(BuildContext context) async {
-    print('date : $date');
     try {
       TodoModel todoModel = TodoModel(
           title: getTextController(addTodoTitleTextField)!.text.trim(),
@@ -208,18 +195,18 @@ class AddTodoProvider extends ChangeNotifier {
           .set(todoModel.toJson())
           .then((value) async {
         print('create todo added successfully');
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        //   backgroundColor: navbarcolor,
-        //   content: Text(
-        //     'Created Todos added successfully',
-        //     style: TextStyle(
-        //       color: blueShade,
-        //       fontSize: 18,
-        //     ),
-        //   ),
-        //   duration: Duration(seconds: 2),
-        //   dismissDirection: DismissDirection.down,
-        // ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: uiBcakgroundColor,
+          content: Text(
+            'Created Todos added successfully',
+            style: TextStyle(
+                color: uiWhiteColor,
+                fontSize: 18,
+                fontFamily: 'Rozanova_Medium'),
+          ),
+          duration: Duration(seconds: 2),
+          dismissDirection: DismissDirection.down,
+        ));
         await Provider.of<TodoDashboardProvider>(context, listen: false)
             .initializeTodosCount();
         return true;

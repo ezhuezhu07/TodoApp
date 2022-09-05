@@ -8,7 +8,7 @@ import 'package:todoapp/providers/sign_in_provider.dart';
 import 'package:todoapp/providers/size_providers.dart';
 import 'package:todoapp/providers/todo_dashboard_provider.dart';
 import 'package:todoapp/views/google_sign_in_page.dart';
-import 'package:todoapp/views/todo_page.dart';
+import 'package:todoapp/views/todo_main_page.dart';
 
 bool shouldUseFirestoreEmulator = false;
 Future main() async {
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
                     value: 10.0,
                   );
                 } else {
-                  return TodoDashBoard();
+                  return TodoMainPage();
                 }
               }),
         );

@@ -25,7 +25,7 @@ class EditTodoProvider extends ChangeNotifier {
 
   DateTime _date = DateTime.now();
   //drop down
-  String _currentDropDownValue = 'Planning';
+  String _currentDropDownValue = 'Personal';
   //present value of the dropdown
   List<String> dropDownValues = AppConst.labelIcons.keys.toList();
 

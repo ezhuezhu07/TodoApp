@@ -22,7 +22,7 @@ class GoogleSignInPage extends StatelessWidget {
           return Container(
             height: sizeProvider.screenHeight,
             width: sizeProvider.screenWidth,
-            color: darkmgray,
+            color: uiBcakgroundColor,
             child: Stack(
               children: [
                 Positioned(
@@ -37,9 +37,10 @@ class GoogleSignInPage extends StatelessWidget {
                           child: Text(
                             "Todo App",
                             style: TextStyle(
-                              color: blueShade,
+                              color: uiWhiteColor,
                               fontSize: sizeProvider.fontSize1,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Rozanova_Medium_Semibold',
+                              fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -50,8 +51,8 @@ class GoogleSignInPage extends StatelessWidget {
                   child: SizedBox(
                     height: sizeProvider.todoLottieAnimationHeight,
                     width: sizeProvider.todoLottieAnimationWidth,
-                    child:
-                        Center(child: Lottie.asset('assets/lottie_todo.json')),
+                    child: Center(
+                        child: Lottie.asset('assets/updated_lottie.json')),
                   ),
                 ),
                 Positioned(
@@ -63,7 +64,7 @@ class GoogleSignInPage extends StatelessWidget {
                     child: ElevatedButton.icon(
                       icon: FaIcon(
                         FontAwesomeIcons.google,
-                        color: blueShade,
+                        color: uiWhiteColor,
                         size: 32,
                       ),
                       style: ButtonStyle(
@@ -71,16 +72,16 @@ class GoogleSignInPage extends StatelessWidget {
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0))),
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(blueShadeLight),
+                              MaterialStateProperty.all<Color>(uiButtonColor),
                           shadowColor:
                               MaterialStateProperty.all<Color>(Colors.black),
                           foregroundColor:
-                              MaterialStateProperty.all<Color>(blueShade),
+                              MaterialStateProperty.all<Color>(uiWhiteColor),
                           overlayColor:
                               MaterialStateProperty.resolveWith<Color?>(
                                   (Set<MaterialState> states) {
                             if (states.contains(MaterialState.hovered)) {
-                              return blueShadeHover;
+                              return uiWhiteColor;
                             }
                             if (states.contains(MaterialState.pressed)) {
                               return bluemid;
@@ -98,8 +99,8 @@ class GoogleSignInPage extends StatelessWidget {
                                 child: Text(
                                   'Sign In With Google',
                                   style: TextStyle(
-                                    fontSize: sizeProvider.fontSize4,
-                                  ),
+                                      // fontSize: sizeProvider.fontSize4,
+                                      fontFamily: 'Rozanova_Medium_Semibold'),
                                 ),
                               )
                             : SizedBox(
